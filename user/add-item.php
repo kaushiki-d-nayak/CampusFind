@@ -8,8 +8,6 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 $msg = "";
-$msg_type = "success";
-$suggestions = [];
 
 if (isset($_POST['submit'])) {
 
@@ -32,7 +30,6 @@ if (isset($_POST['submit'])) {
             $image = $new_name;
         } else {
             $msg = "Image upload failed!";
-            $msg_type = "error";
         }
     }
 
@@ -42,34 +39,8 @@ if (isset($_POST['submit'])) {
 
         if ($insert) {
             $msg = "Item posted successfully!";
-            $msg_type = "success";
-
-            $opposite = ($status === "lost") ? "found" : "lost";
-            $titleEsc = mysqli_real_escape_string($conn, $title);
-            $catEsc = mysqli_real_escape_string($conn, $category);
-            $locEsc = mysqli_real_escape_string($conn, $location);
-
-            $sugQuery = mysqli_query($conn, "
-                SELECT id, title, category, location, image, created_at,
-                    (
-                        (CASE WHEN category LIKE '%$catEsc%' THEN 3 ELSE 0 END) +
-                        (CASE WHEN location LIKE '%$locEsc%' THEN 2 ELSE 0 END) +
-                        (CASE WHEN title LIKE '%$titleEsc%' THEN 1 ELSE 0 END)
-                    ) AS score
-                FROM items
-                WHERE status='$opposite'
-                ORDER BY score DESC, created_at DESC
-                LIMIT 5
-            ");
-
-            if ($sugQuery) {
-                while ($r = mysqli_fetch_assoc($sugQuery)) {
-                    $suggestions[] = $r;
-                }
-            }
         } else {
             $msg = "Failed to post item!";
-            $msg_type = "error";
         }
     }
 }
@@ -98,28 +69,13 @@ if (isset($_POST['submit'])) {
         <h2>Post Lost / Found Item</h2>
 
         <?php if ($msg != "") { ?>
-            <p style="color:<?php echo ($msg_type === 'error') ? '#e63946' : '#27ae60'; ?>;">
-                <?php echo htmlspecialchars($msg); ?>
-            </p>
+            <p style="color:green;"><?php echo $msg; ?></p>
         <?php } ?>
 
         <form method="POST" enctype="multipart/form-data">
             <input type="text" name="title" placeholder="Item Name" required>
             <textarea name="description" placeholder="Description" required></textarea>
-            <label>Category:</label>
-            <select name="category" required>
-                <option value="">-- Select Category --</option>
-                <option value="Phone">Phone</option>
-                <option value="Laptop">Laptop</option>
-                <option value="Bag">Bag</option>
-                <option value="Wallet">Wallet</option>
-                <option value="ID Card">ID Card</option>
-                <option value="Book">Book</option>
-                <option value="Keys">Keys</option>
-                <option value="Electronics">Electronics</option>
-                <option value="Clothing">Clothing</option>
-                <option value="Others">Others</option>
-            </select>
+            <input type="text" name="category" placeholder="Category (Phone, Bag, Book, etc.)" required>
             <input type="text" name="location" placeholder="Location (Library, Lab, Canteen)" required>
 
             <label>Status:</label>
@@ -134,48 +90,6 @@ if (isset($_POST['submit'])) {
             <button type="submit" name="submit" class="btn">Post Item</button>
         </form>
     </div>
-    <?php if ($msg_type === "success" && count($suggestions) > 0) { ?>
-        <div class="card" style="max-width:900px;margin:20px auto 0;">
-            <h2>Possible Matches</h2>
-            <p style="color:#555;margin-bottom:10px;">
-                We found items that might match your post.
-            </p>
-
-            <table width="100%" cellpadding="10">
-                <tr style="background:#003366;color:white;">
-                    <th>Image</th>
-                    <th>Item</th>
-                    <th>Category</th>
-                    <th>Location</th>
-                    <th>Action</th>
-                </tr>
-                <?php foreach ($suggestions as $s) { ?>
-                    <tr>
-                        <td style="width:80px;">
-                            <?php if (!empty($s['image'])) { ?>
-                                <img src="../assets/images/<?php echo htmlspecialchars($s['image']); ?>"
-                                     style="width:60px;height:60px;object-fit:cover;border-radius:6px;">
-                            <?php } ?>
-                        </td>
-                        <td><?php echo htmlspecialchars($s['title']); ?></td>
-                        <td><?php echo htmlspecialchars($s['category']); ?></td>
-                        <td><?php echo htmlspecialchars($s['location']); ?></td>
-                        <td>
-                            <?php if ($status === "lost") { ?>
-                                <a class="btn" style="background:#27ae60;" href="found-items.php?q=<?php echo urlencode($title); ?>">
-                                    View Found
-                                </a>
-                            <?php } else { ?>
-                                <a class="btn" style="background:#e74c3c;" href="lost-items.php?q=<?php echo urlencode($title); ?>">
-                                    View Lost
-                                </a>
-                            <?php } ?>
-                        </td>
-                    </tr>
-                <?php } ?>
-            </table>
-        </div>
-    <?php } ?>
 </div>
 
 <div class="footer">

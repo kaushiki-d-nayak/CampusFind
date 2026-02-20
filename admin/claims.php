@@ -11,14 +11,8 @@ if (!isset($_SESSION['admin_id'])) {
 if (isset($_GET['approve'])) {
     $id = intval($_GET['approve']);
     $c = mysqli_fetch_assoc(mysqli_query($conn,"SELECT item_id FROM claims WHERE id='$id'"));
-    if ($c) {
-        // Approve this claim
-        mysqli_query($conn,"UPDATE claims SET status='approved' WHERE id='$id'");
-        // Mark item as claimed
-        mysqli_query($conn,"UPDATE items SET status='claimed' WHERE id='".$c['item_id']."'");
-        // Reject all other pending claims for this item
-        mysqli_query($conn,"UPDATE claims SET status='rejected' WHERE item_id='".$c['item_id']."' AND id!='$id'");
-    }
+    mysqli_query($conn,"UPDATE claims SET status='approved' WHERE id='$id'");
+    mysqli_query($conn,"UPDATE items SET status='claimed' WHERE id='".$c['item_id']."'");
     header("Location: claims.php");
     exit;
 }

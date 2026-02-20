@@ -17,9 +17,7 @@ $found = mysqli_fetch_assoc(
     mysqli_query($conn, "SELECT COUNT(*) as total FROM items WHERE status='found'")
 )['total'];
 
-// Claims made by this user (any status)
-$claimed = mysqli_fetch_assoc(
-    mysqli_query($conn, "SELECT COUNT(*) AS total FROM claims WHERE user_id='$user_id'")
+$claimed = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) AS total FROM claims WHERE status='approved' OR status='pending' ")
 )['total'];
 
 ?>

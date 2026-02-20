@@ -7,20 +7,6 @@ if (!isset($_SESSION['admin_id'])) {
     exit;
 }
 
-// Delete item (and related claims)
-if (isset($_GET['delete'])) {
-    $item_id = intval($_GET['delete']);
-
-    // Optional: delete related claims first
-    mysqli_query($conn, "DELETE FROM claims WHERE item_id='$item_id'");
-
-    // Then delete the item
-    mysqli_query($conn, "DELETE FROM items WHERE id='$item_id'");
-
-    header("Location: items.php");
-    exit;
-}
-
 $items = mysqli_query($conn, "
     SELECT items.*, users.name AS poster
     FROM items
@@ -52,7 +38,6 @@ $items = mysqli_query($conn, "
     <th>Category</th>
     <th>Posted By</th>
     <th>Status</th>
-    <th>Action</th>
 </tr>
 
 <?php while ($row = mysqli_fetch_assoc($items)) { ?>
@@ -70,14 +55,6 @@ $items = mysqli_query($conn, "
         <span class="badge <?php echo $row['status']; ?>">
             <?php echo ucfirst($row['status']); ?>
         </span>
-    </td>
-    <td>
-        <a href="items.php?delete=<?php echo $row['id']; ?>"
-           class="btn"
-           style="background:#e63946;"
-           onclick="return confirm('Are you sure you want to delete this item?');">
-            Delete
-        </a>
     </td>
 </tr>
 <?php } ?>

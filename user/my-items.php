@@ -12,8 +12,6 @@ $user_id = $_SESSION['user_id'];
 /* DELETE ITEM */
 if (isset($_GET['delete'])) {
     $item_id = intval($_GET['delete']);
-    // Delete related claims first, then the item
-    mysqli_query($conn, "DELETE FROM claims WHERE item_id='$item_id'");
     mysqli_query($conn, "DELETE FROM items WHERE id='$item_id' AND user_id='$user_id'");
     header("Location: my-items.php");
     exit;
@@ -78,13 +76,13 @@ $query = mysqli_query($conn, "
     </td>
 
     <!-- TITLE -->
-    <td><?php echo htmlspecialchars($row['title']); ?></td>
+    <td><?php echo $row['title']; ?></td>
 
     <!-- CATEGORY -->
-    <td><?php echo htmlspecialchars($row['category']); ?></td>
+    <td><?php echo $row['category']; ?></td>
 
     <!-- LOCATION -->
-    <td><?php echo htmlspecialchars($row['location']); ?></td>
+    <td><?php echo $row['location']; ?></td>
 
     <!-- STATUS -->
     <td>

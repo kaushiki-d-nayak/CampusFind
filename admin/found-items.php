@@ -45,13 +45,13 @@ $items = mysqli_query($conn, "
 <tr>
     <td>
         <?php if ($row['image']) { ?>
-            <img src="../assets/images/<?php echo htmlspecialchars($row['image']); ?>"
+            <img src="../assets/images/<?php echo $row['image']; ?>"
                  style="width:60px;height:60px;object-fit:cover;border-radius:6px;">
         <?php } ?>
     </td>
-    <td><?php echo htmlspecialchars($row['title']); ?></td>
-    <td><?php echo htmlspecialchars($row['category']); ?></td>
-    <td><?php echo htmlspecialchars($row['poster']); ?></td>
+    <td><?php echo $row['title']; ?></td>
+    <td><?php echo $row['category']; ?></td>
+    <td><?php echo $row['poster']; ?></td>
     <td><span class="badge found">Found</span></td>
 </tr>
 <?php } ?>

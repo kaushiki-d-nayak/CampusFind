@@ -18,8 +18,8 @@ if (isset($_POST['register'])) {
         $hashed = password_hash($pass, PASSWORD_DEFAULT);
 
         $insert = mysqli_query($conn, 
-            "INSERT INTO users (name,email,password,status) 
-             VALUES ('$name','$email','$hashed','active')"
+            "INSERT INTO users (name,email,password) 
+             VALUES ('$name','$email','$hashed')"
         );
 
         if ($insert) {
