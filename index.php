@@ -24,7 +24,7 @@
 <!-- HERO SECTION -->
 <section class="hero">
     <div class="hero-content">
-        <h1>FOund Something on Campus?</h1>
+        <h1>Lost Something on Campus??</h1>
         <p>
             CampusFind helps students and staff report, track,  
             and recover lost & found items inside the college.
